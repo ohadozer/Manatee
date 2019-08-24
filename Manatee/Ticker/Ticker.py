@@ -1,9 +1,9 @@
 from os.path import dirname, abspath, join
-from pathlib import Path
 from alpha_vantage.timeseries import TimeSeries
 
 
 class TickerError(Exception):
+    
     def __init__(self, desc):
         desc = 'Manatee Ticker Error :: ' + desc
         super(TickerError, self).__init__(desc)
