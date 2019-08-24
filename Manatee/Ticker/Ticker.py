@@ -1,3 +1,5 @@
+from os.path import dirname, abspath, join
+from pathlib import Path
 from alpha_vantage.timeseries import TimeSeries
 
 
@@ -15,8 +17,17 @@ class TickerResult:
 
 class Ticker:
 
-    def __init__(self, api_key='GBI5B3IH307H9BNZ'):
-        self._api_key = api_key
+    def __init__(self, api_key=None):
+
+        if api_key:
+            self._api_key = api_key
+        else:
+            try:
+                key = join(dirname(abspath(__file__)), 'key.txt')
+                self._api_key = open(key).read().split("\n")[0]
+            except Exception as ex:
+                raise TickerError('Error reading API key. %s' % str(ex))
+
         self._ts = None
 
         self._create_internal_endpoint()
@@ -29,7 +40,7 @@ class Ticker:
         try:
             self._ts = TimeSeries(key=self._api_key)
         except ValueError as ve:
-            raise TickerError('Internal error on TS creation %s' % str(ve))
+            raise TickerError('Internal error on TS creation. %s' % str(ve))
 
     def get_data(self):
 
